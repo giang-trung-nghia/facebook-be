@@ -1,2 +1,4 @@
 .vs
 appsettings.json
+bin
+obj
