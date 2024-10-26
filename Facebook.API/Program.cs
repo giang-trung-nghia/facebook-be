@@ -3,6 +3,7 @@ using Facebook.Application.IServices.IUsers;
 using Facebook.Application.Services.Auth;
 using Facebook.Application.Services.Users;
 using Facebook.Domain.IRepositories;
+using Facebook.Domain.IRepositories.IAuth;
 using Facebook.Domain.IRepositories.Users;
 using Facebook.Infrastructure.Migrations.Contexts;
 using Facebook.Infrastructure.Repositories;
@@ -66,6 +67,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IJwtRepository, JwtRepository>();
 
 // CORS
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";

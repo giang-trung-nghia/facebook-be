@@ -1,5 +1,6 @@
 .vs
 appsettings.json
 bin
+Debug/
 obj
 packages

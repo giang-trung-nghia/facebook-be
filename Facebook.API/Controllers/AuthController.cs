@@ -7,6 +7,9 @@ using System.Text;
 using Facebook.Domain.Entities.Auth;
 using Facebook.Application.Dtos.Auth;
 using Facebook.Application.Dtos.Users;
+using Facebook.Domain.IRepositories.IAuth;
+using Facebook.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Facebook.API.Controllers
 {
@@ -15,19 +18,45 @@ namespace Facebook.API.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
+        private readonly IJwtRepository _jwtRepository;
 
-        public AuthController(IAuthService authService, IConfiguration configuration)
+        public AuthController(IAuthService authService, IJwtRepository jwtRepository, IConfiguration configuration)
         {
             _authService = authService;
             _configuration = configuration;
+            _jwtRepository = jwtRepository;
         }
 
         [HttpPost("sign-in")]
-        public async Task<UserDto> SignIn([FromBody] SignInDto body)
+        public async Task<dynamic> SignIn([FromBody] SignInDto body)
         {
             var result = await _authService.SignInAsync(body);
+            var validUser = await _authService.IsValidUserAsync(new AuthEntity 
+            { 
+                Email = body.Email, 
+                Password = body.Password 
+            });
 
-            return result;
+            if (!validUser)
+            {
+                return Unauthorized("Invalid username or password...");
+            }
+
+            var token = _jwtRepository.GenerateToken(body.Email);
+
+            if (token == null)
+            {
+                return Unauthorized("Invalid Attempt..");
+            }
+
+            UserRefreshTokens obj = new UserRefreshTokens
+            {
+                RefreshToken = token.RefreshToken,
+                UserName = body.Email
+            };
+
+            _authService.AddUserRefreshTokens(obj);
+            return Ok(token);
         }
 
         [HttpPost("sign-up")]
@@ -75,6 +104,40 @@ namespace Facebook.API.Controllers
                     window.close();
                 </script>";
             return Content(script, "text/html");
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("refresh-token")]
+        public IActionResult Refresh(Tokens token)
+        {
+            var principal = _jwtRepository.GetPrincipalFromExpiredToken(token.AccessToken);
+            var username = principal.Identity?.Name;
+
+            var savedRefreshToken = _authService.GetSavedRefreshTokens(username, token.RefreshToken);
+
+            if (savedRefreshToken.RefreshToken != token.RefreshToken)
+            {
+                return Unauthorized("Invalid attempt!");
+            }
+
+            var newJwtToken = _jwtRepository.GenerateRefreshToken(username);
+
+            if (newJwtToken == null)
+            {
+                return Unauthorized("Invalid attempt!");
+            }
+
+            UserRefreshTokens obj = new UserRefreshTokens
+            {
+                RefreshToken = newJwtToken.RefreshToken,
+                UserName = username
+            };
+
+            _authService.DeleteUserRefreshTokens(username, token.RefreshToken);
+            _authService.AddUserRefreshTokens(obj);
+
+            return Ok(newJwtToken);
         }
 
         private string GenerateJwtToken(string idToken)

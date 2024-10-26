@@ -1,4 +1,5 @@
 ﻿using Facebook.Domain.Entities;
+using Facebook.Domain.Entities.Auth;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Facebook.Infrastructure.Migrations.Contexts
     public class AppDbContext : DbContext
     {
         public DbSet<UserEntity> Users { get; set; }
+        public virtual DbSet<UserRefreshTokens> UserRefreshToken { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
