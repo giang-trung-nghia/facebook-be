@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Domain\\Facebook.Domain.csproj": {}
+    "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Domain\\Facebook.Domain.csproj": {}
   },
   "projects": {
-    "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Domain\\Facebook.Domain.csproj": {
+    "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Domain\\Facebook.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Domain\\Facebook.Domain.csproj",
+        "projectUniqueName": "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Domain\\Facebook.Domain.csproj",
         "projectName": "Facebook.Domain",
-        "projectPath": "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Domain\\Facebook.Domain.csproj",
+        "projectPath": "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Domain\\Facebook.Domain.csproj",
         "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Domain\\obj\\",
+        "outputPath": "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -17,18 +17,8 @@
   },
   {
     "ContainingType": "Facebook.API.Controllers.AuthController",
-    "Method": "GoogleLogin",
-    "RelativePath": "api/v1/auth/login-google",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Facebook.API.Controllers.AuthController",
     "Method": "SignIn",
-    "RelativePath": "api/v1/auth/signin",
+    "RelativePath": "api/v1/auth/sign-in",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -53,8 +43,18 @@
   },
   {
     "ContainingType": "Facebook.API.Controllers.AuthController",
+    "Method": "SignInGoogle",
+    "RelativePath": "api/v1/auth/sign-in-google",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Facebook.API.Controllers.AuthController",
     "Method": "SignUp",
-    "RelativePath": "api/v1/auth/signup",
+    "RelativePath": "api/v1/auth/sign-up",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

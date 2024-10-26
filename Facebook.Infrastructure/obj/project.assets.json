@@ -4344,11 +4344,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Infrastructure\\Facebook.Infrastructure.csproj",
+      "projectUniqueName": "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Infrastructure\\Facebook.Infrastructure.csproj",
       "projectName": "Facebook.Infrastructure",
-      "projectPath": "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Infrastructure\\Facebook.Infrastructure.csproj",
+      "projectPath": "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Infrastructure\\Facebook.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
-      "outputPath": "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Infrastructure\\obj\\",
+      "outputPath": "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -4366,11 +4366,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Application\\Facebook.Application.csproj": {
-              "projectPath": "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Application\\Facebook.Application.csproj"
+            "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Application\\Facebook.Application.csproj": {
+              "projectPath": "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Application\\Facebook.Application.csproj"
             },
-            "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Domain\\Facebook.Domain.csproj": {
-              "projectPath": "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Domain\\Facebook.Domain.csproj"
+            "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Domain\\Facebook.Domain.csproj": {
+              "projectPath": "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Domain\\Facebook.Domain.csproj"
             }
           }
         }

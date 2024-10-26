@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZMfJPwXda2M=",
+  "dgSpecHash": "chlUOV+1ik0=",
   "success": true,
-  "projectFilePath": "D:\\Project\\facebook\\facebook-be\\Facebook.Backend\\Facebook.Domain\\Facebook.Domain.csproj",
+  "projectFilePath": "D:\\Project\\facebook\\test\\facebook-be\\Facebook.Domain\\Facebook.Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
