@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Facebook.Domain.Entities.Auth
 {
-    public class Tokens
+    public class Token
     {
         public string AccessToken { get; set; }
 

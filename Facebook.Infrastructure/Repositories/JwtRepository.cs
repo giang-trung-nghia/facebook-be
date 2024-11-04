@@ -23,19 +23,19 @@ namespace Facebook.Infrastructure.Repositories
         }
 
         #region JWT token
-        public Tokens GenerateToken(string userName)
+        public Token GenerateToken(string userName)
         {
             var result = GenerateJWTTokens(userName);
             return result;
         }
 
-        public Tokens GenerateRefreshToken(string username)
+        public Token GenerateRefreshToken(string username)
         {
             var result = GenerateJWTTokens(username);
             return result;
         }
 
-        public Tokens GenerateJWTTokens(string userName)
+        public Token GenerateJWTTokens(string userName)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace Facebook.Infrastructure.Repositories
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var refreshToken = GenerateRefreshToken();
-                return new Tokens { AccessToken = tokenHandler.WriteToken(token), RefreshToken = refreshToken };
+                return new Token { AccessToken = tokenHandler.WriteToken(token), RefreshToken = refreshToken };
             }
             catch (Exception ex)
             {

@@ -1,7 +1,9 @@
-﻿using Facebook.Domain.Entities;
+﻿using Azure.Core;
+using Facebook.Domain.Entities;
 using Facebook.Domain.Entities.Auth;
 using Facebook.Domain.IRepositories;
 using Facebook.Infrastructure.Migrations.Contexts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -96,6 +98,11 @@ namespace Facebook.Infrastructure.Repositories
                 return true;
             else
                 return false;
+        }
+
+        public IActionResult RefreshToken(Token token)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

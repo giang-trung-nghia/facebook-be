@@ -10,8 +10,8 @@ namespace Facebook.Domain.IRepositories.IAuth
 {
     public interface IJwtRepository
     {
-        Tokens GenerateToken(string userName);
-        Tokens GenerateRefreshToken(string userName);
+        Token GenerateToken(string userName);
+        Token GenerateRefreshToken(string userName);
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }

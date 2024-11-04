@@ -4,6 +4,7 @@ using Facebook.Application.IServices.IAuth;
 using Facebook.Domain.Entities;
 using Facebook.Domain.Entities.Auth;
 using Facebook.Domain.IRepositories;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,6 +92,12 @@ namespace Facebook.Application.Services.Auth
             };
 
             return user;
+        }
+
+        public IActionResult RefreshToken(Token token)
+        {
+            var result = _AuthRepository.RefreshToken(token);
+            throw new NotImplementedException();
         }
     }
 }

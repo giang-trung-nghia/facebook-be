@@ -45,21 +45,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Google
-//builder.Services.AddAuthentication(
-//    options =>
-//    {
-//        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-//    })
-//    .AddCookie()
-//    .AddGoogle(options =>
-//    {
-//        options.ClientId = configuration["Authentication:Google:ClientId"];
-//        options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-//    });
-
 builder.Services.AddDbContext<AppDbContext>(options =>
        options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 

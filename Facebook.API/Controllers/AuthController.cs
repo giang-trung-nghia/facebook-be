@@ -109,7 +109,7 @@ namespace Facebook.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("refresh-token")]
-        public IActionResult Refresh(Tokens token)
+        public IActionResult Refresh(Token token)
         {
             var principal = _jwtRepository.GetPrincipalFromExpiredToken(token.AccessToken);
             var username = principal.Identity?.Name;

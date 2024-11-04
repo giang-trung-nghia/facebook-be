@@ -1,5 +1,6 @@
 ﻿using Facebook.Domain.Entities;
 using Facebook.Domain.Entities.Auth;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,8 @@ namespace Facebook.Domain.IRepositories
         UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user);
         UserRefreshTokens GetSavedRefreshTokens(string username, string refreshtoken);
         bool DeleteUserRefreshTokens(string username, string refreshToken);
+        IActionResult SignInGoogle();
+        IActionResult GoogleCallback();
+        IActionResult RefreshToken(Token token);
     }
 }
