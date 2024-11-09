@@ -1,4 +1,5 @@
-﻿using Facebook.Domain.Entities.Auth;
+﻿using Facebook.Domain.Const;
+using Facebook.Domain.Entities.Auth;
 using Facebook.Domain.IRepositories.IAuth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -16,38 +17,41 @@ namespace Facebook.Infrastructure.Repositories
     public class JwtRepository : IJwtRepository
     {
 
-        private readonly IConfiguration _iconfiguration;
+        private readonly IConfiguration _configuration;
         public JwtRepository(IConfiguration configuration)
         {
-            _iconfiguration = configuration;
+            _configuration = configuration;
         }
 
         #region JWT token
-        public Token GenerateToken(string userName)
+        public Token GenerateToken(Guid userId)
         {
-            var result = GenerateJWTTokens(userName);
+            var result = GenerateJWTTokens(userId);
             return result;
         }
 
-        public Token GenerateRefreshToken(string username)
+        public Token GenerateRefreshToken(Guid userId)
         {
-            var result = GenerateJWTTokens(username);
+            var result = GenerateJWTTokens(userId);
             return result;
         }
 
-        public Token GenerateJWTTokens(string userName)
+        public Token GenerateJWTTokens(Guid userId)
         {
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var tokenKey = Encoding.UTF8.GetBytes(_iconfiguration["JWT:Key"]);
+                var tokenKey = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
+
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                        new Claim(ClaimTypes.Name, userName)
+                        new Claim(FbJwtClaimType.Id, userId.ToString())
                     }),
                     Expires = DateTime.Now.AddMinutes(1),
+                    Issuer = _configuration["JWT:Issuer"],
+                    Audience = _configuration["JWT:Audience"],
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
                 };
 
@@ -73,7 +77,7 @@ namespace Facebook.Infrastructure.Repositories
 
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
-            var Key = Encoding.UTF8.GetBytes(_iconfiguration["JWT:Key"]);
+            var Key = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
 
             var tokenValidationParameters = new TokenValidationParameters
             {

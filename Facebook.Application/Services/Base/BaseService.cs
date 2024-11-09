@@ -28,17 +28,6 @@ namespace Facebook.Application.Services.Base
         }
         #endregion
 
-        #region FindAsync
-        public async Task<TEntityDto>? FindAsync(Guid id)
-        {
-            var entity = await BaseRepository.FindAsync(id);
-
-            var entityDto = MapEntityToEntityDto(entity);
-
-            return entityDto;
-        }
-        #endregion
-
         #region GetAsync
         public async Task<TEntityDto>? GetAsync(Guid id)
         {

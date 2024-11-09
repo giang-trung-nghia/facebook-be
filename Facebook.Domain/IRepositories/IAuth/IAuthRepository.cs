@@ -7,20 +7,22 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Facebook.Domain.IRepositories
 {
     public interface IAuthRepository
     {
-        Task<UserEntity> SignInAsync(AuthEntity auth);
-        Task<UserEntity> SignUpAsync(AuthEntity auth);
+        Task<UserEntity> SignInAsync(SignInEntity signInEntity);
+        Task<UserEntity> SignUpAsync(SignUpEntity signUpEntity);
         Task<UserEntity> SignOutAsync(string username);
-        Task<bool> IsValidUserAsync(AuthEntity users);
         UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user);
-        UserRefreshTokens GetSavedRefreshTokens(string username, string refreshtoken);
+        UserRefreshTokens GetSavedRefreshTokens(Guid userId, string refreshtoken);
         bool DeleteUserRefreshTokens(string username, string refreshToken);
-        IActionResult SignInGoogle();
-        IActionResult GoogleCallback();
-        IActionResult RefreshToken(Token token);
+        Task<UserEntity> SignInWithGoogleAsync(string googleIdToken);
+        Task<UserEntity> SignUpWithGoogleAsync(Payload payload);
+        //IActionResult SignInGoogle();
+        //IActionResult GoogleCallback();
+        //IActionResult RefreshToken(Token token);
     }
 }

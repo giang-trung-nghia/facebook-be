@@ -7,14 +7,8 @@ using System.Threading.Tasks;
 
 namespace Facebook.Domain.Entities.Auth
 {
-    public class SignUp
+    public class SignInEntity
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public string Name { get; set; }
-
         [Required]
         public string Email { get; set; }
 

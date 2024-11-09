@@ -15,16 +15,16 @@ namespace Facebook.API.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        [Authorize]
-        [Route("GetAll")]
-        public async Task<List<UserDto>> GetAllAsync()
-        {
+        //[HttpGet]
+        //[Authorize]
+        //[Route("GetAll")]
+        //public async Task<List<UserDto>> GetAllAsync()
+        //{
 
-            var result = await _userService.GetAllAsync();
+        //    var result = await _userService.GetAllAsync();
 
-            return result;
+        //    return result;
 
-        }
+        //}
     }
 }

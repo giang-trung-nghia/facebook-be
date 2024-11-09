@@ -12,8 +12,6 @@ namespace Facebook.Application.IServices.IBase
 
         Task<TEntityDto>? GetAsync(Guid id);
 
-        Task<TEntityDto>? FindAsync(Guid id);
-
         Task<List<TEntityDto>>? PagingAsync(int pageNumber, int pageSize, string? searchKey);
 
     }

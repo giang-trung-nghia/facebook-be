@@ -14,5 +14,6 @@ namespace Facebook.Domain.Entities
         public required string Password { get; set; }
         public string? Phone { get; set; }
         public DateOnly? Dob { get; set; }
+        public string? ProfilePicture { get; set; }
     }
 }

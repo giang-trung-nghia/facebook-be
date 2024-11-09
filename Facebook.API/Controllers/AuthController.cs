@@ -6,10 +6,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Facebook.Domain.Entities.Auth;
 using Facebook.Application.Dtos.Auth;
-using Facebook.Application.Dtos.Users;
-using Facebook.Domain.IRepositories.IAuth;
-using Facebook.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Google.Apis.Auth;
 
 namespace Facebook.API.Controllers
 {
@@ -18,31 +16,26 @@ namespace Facebook.API.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
-        private readonly IJwtRepository _jwtRepository;
+        private readonly IJwtService _jwtService;
 
-        public AuthController(IAuthService authService, IJwtRepository jwtRepository, IConfiguration configuration)
+        public AuthController(IAuthService authService, IJwtService jwtService, IConfiguration configuration)
         {
             _authService = authService;
             _configuration = configuration;
-            _jwtRepository = jwtRepository;
+            _jwtService = jwtService;
         }
 
         [HttpPost("sign-in")]
         public async Task<dynamic> SignIn([FromBody] SignInDto body)
         {
-            var result = await _authService.SignInAsync(body);
-            var validUser = await _authService.IsValidUserAsync(new AuthEntity 
-            { 
-                Email = body.Email, 
-                Password = body.Password 
-            });
+            var user = await _authService.SignInAsync(body);
 
-            if (!validUser)
+            if (user == null)
             {
-                return Unauthorized("Invalid username or password...");
+                return Unauthorized("Email does not exist!");
             }
 
-            var token = _jwtRepository.GenerateToken(body.Email);
+            var token = _jwtService.GenerateToken(user.Id);
 
             if (token == null)
             {
@@ -56,15 +49,36 @@ namespace Facebook.API.Controllers
             };
 
             _authService.AddUserRefreshTokens(obj);
+            
+            // Set cookies
+            //var accessTokenCookieOptions = new CookieOptions
+            //{
+            //    HttpOnly = true,
+            //    Secure = true, // Use only over HTTPS
+            //    SameSite = SameSiteMode.Strict,
+            //    Expires = DateTime.UtcNow.AddMinutes(15) // Set as appropriate
+            //};
+
+            //var refreshTokenCookieOptions = new CookieOptions
+            //{
+            //    HttpOnly = true,
+            //    Secure = true,
+            //    SameSite = SameSiteMode.Strict,
+            //    Expires = DateTime.UtcNow.AddDays(7) // Longer expiry for refresh token
+            //};
+
+            //Response.Cookies.Append("accessToken", token.AccessToken, accessTokenCookieOptions);
+            //Response.Cookies.Append("refreshToken", token.RefreshToken, refreshTokenCookieOptions);
+
             return Ok(token);
         }
 
         [HttpPost("sign-up")]
-        public async Task<UserDto> SignUp([FromBody] SignUpDto body)
+        public async Task<IActionResult> SignUp([FromBody] SignUpDto body)
         {
             var result = await _authService.SignUpAsync(body);
 
-            return result;
+            return Ok();
         }
 
         [HttpGet("sign-in-google")]
@@ -83,6 +97,7 @@ namespace Facebook.API.Controllers
             var clientSecret = _configuration["Authentication:Google:ClientSecret"];
             var redirectUri = _configuration["Authentication:Google:RedirectUri"];
 
+            #region Step 1: Exchange code for Google ID Token
             var tokenRequest = new HttpClient();
             var tokenResponse = await tokenRequest.PostAsync("https://oauth2.googleapis.com/token", new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -96,9 +111,14 @@ namespace Facebook.API.Controllers
             // Register JWT Token by google id Token
             var tokenResult = await tokenResponse.Content.ReadFromJsonAsync<GoogleTokenResponse>();
             var googleIdToken = tokenResult.IdToken;
+            #endregion
 
+            // Step 2: Validate Google ID token and extract user information
+            var user = await _authService.SignInWithGoogleAsync(googleIdToken);
+
+            // Step 3: Generate a JWT Token
             var jwtToken = GenerateJwtToken(googleIdToken);
-            var script = $@"
+            var script = $@" 
                 <script>
                     window.opener.postMessage({{ token: '{jwtToken}' }}, '*');
                     window.close();
@@ -106,22 +126,31 @@ namespace Facebook.API.Controllers
             return Content(script, "text/html");
         }
 
+        private GoogleJsonWebSignature.Payload ValidateGoogleIdToken(string idToken)
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = new List<string> { _configuration["Authentication:Google:ClientId"] }
+            };
+            return GoogleJsonWebSignature.ValidateAsync(idToken, settings).Result;
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("refresh-token")]
         public IActionResult Refresh(Token token)
         {
-            var principal = _jwtRepository.GetPrincipalFromExpiredToken(token.AccessToken);
-            var username = principal.Identity?.Name;
+            var principal = _jwtService.GetPrincipalFromExpiredToken(token.AccessToken);
+            var userId = principal.Identity?.Name;
 
-            var savedRefreshToken = _authService.GetSavedRefreshTokens(username, token.RefreshToken);
+            var savedRefreshToken = _authService.GetSavedRefreshTokens(Guid.Parse(userId), token.RefreshToken);
 
             if (savedRefreshToken.RefreshToken != token.RefreshToken)
             {
                 return Unauthorized("Invalid attempt!");
             }
 
-            var newJwtToken = _jwtRepository.GenerateRefreshToken(username);
+            var newJwtToken = _jwtService.GenerateRefreshToken(Guid.Parse(userId));
 
             if (newJwtToken == null)
             {
@@ -131,10 +160,10 @@ namespace Facebook.API.Controllers
             UserRefreshTokens obj = new UserRefreshTokens
             {
                 RefreshToken = newJwtToken.RefreshToken,
-                UserName = username
+                UserName = userId
             };
 
-            _authService.DeleteUserRefreshTokens(username, token.RefreshToken);
+            _authService.DeleteUserRefreshTokens(userId, token.RefreshToken);
             _authService.AddUserRefreshTokens(obj);
 
             return Ok(newJwtToken);
@@ -150,6 +179,7 @@ namespace Facebook.API.Controllers
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, idToken),
+                new Claim(JwtRegisteredClaimNames.Sid, idToken),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

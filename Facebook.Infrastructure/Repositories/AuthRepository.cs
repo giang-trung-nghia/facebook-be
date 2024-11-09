@@ -3,6 +3,7 @@ using Facebook.Domain.Entities;
 using Facebook.Domain.Entities.Auth;
 using Facebook.Domain.IRepositories;
 using Facebook.Infrastructure.Migrations.Contexts;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,24 +16,30 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Facebook.Infrastructure.Repositories
 {
     public class AuthRepository : IAuthRepository
     {
         private readonly AppDbContext _context;
-        private readonly IConfiguration _iconfiguration;
-        public AuthRepository(AppDbContext context, IConfiguration iconfiguration)
+        private readonly IConfiguration _configuration;
+        public AuthRepository(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
-            _iconfiguration = iconfiguration;
+            _configuration = configuration;
         }
 
         #region Action
-        public async Task<UserEntity> SignInAsync(AuthEntity auth)
+        public async Task<UserEntity> SignInAsync(SignInEntity signInEntity)
         {
-            var result = await _context.Users.SingleAsync(a => a.Email == auth.Email);
-            if (result.Password != auth.Password)
+            var result = await _context.Users.SingleOrDefaultAsync(a => a.Email == signInEntity.Email);
+            if (result == null)
+            {
+                return null;
+            }
+
+            if (result.Password != signInEntity.Password)
             {
                 throw new Exception("Password wrong");
             }
@@ -45,17 +52,16 @@ namespace Facebook.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<UserEntity> SignUpAsync(AuthEntity auth)
+        public async Task<UserEntity> SignUpAsync(SignUpEntity signUpEntity)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == auth.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == signUpEntity.Email);
             if (user == null)
             {
                 user = new UserEntity
                 {
-                    Email = auth.Email,
-                    Password = auth.Password,
-                    Name = "new user",
-                    Phone = "+8400000001",
+                    Email = signUpEntity.Email,
+                    Password = signUpEntity.Password,
+                    Name = signUpEntity.Name,
                     CreatedDate = DateTime.Now,
                 };
                 _context.Users.Add(user);
@@ -85,25 +91,63 @@ namespace Facebook.Infrastructure.Repositories
             return false;
         }
 
-        public UserRefreshTokens GetSavedRefreshTokens(string username, string refreshToken)
+        public UserRefreshTokens GetSavedRefreshTokens(Guid userId, string refreshToken)
         {
-            return _context.UserRefreshToken.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshToken && x.IsActive == true);
+            var result = _context.UserRefreshToken.FirstOrDefault(x => x.Id == userId && x.RefreshToken == refreshToken && x.IsActive == true);
+            return result;
         }
 
-        public async Task<bool> IsValidUserAsync(AuthEntity users)
+        public async Task<UserEntity> SignInWithGoogleAsync(string googleIdToken)
         {
-            var u = _context.Users.FirstOrDefault(o => o.Email == users.Email && o.Password == users.Password);
+            var payload = ValidateGoogleIdToken(googleIdToken);
+            if (payload == null)
+            {
+                throw new Exception("Can't get data from this google account");
+            }
 
-            if (u != null)
-                return true;
+            var googleId = payload.Subject;
+            var email = payload.Email;
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user != null)
+            {
+                return user;
+            }
             else
-                return false;
+            {
+                var newUser = await SignUpWithGoogleAsync(payload);
+                return newUser;
+            }
+
         }
 
-        public IActionResult RefreshToken(Token token)
+        public async Task<UserEntity> SignUpWithGoogleAsync(Payload payload)
         {
-            throw new NotImplementedException();
+            var user = new UserEntity
+            {
+                Id = Guid.NewGuid(),
+                Email = payload.Email,
+                Password = payload.Subject,
+                Name = payload.Name,
+                ProfilePicture = payload.Picture,
+                CreatedDate = DateTime.Now,
+            };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return user;
         }
+
+        private Payload ValidateGoogleIdToken(string idToken)
+        {
+            var settings = new ValidationSettings
+            {
+                Audience = new List<string> { _configuration["Authentication:Google:ClientId"] }
+            };
+            return ValidateAsync(idToken, settings).Result;
+        }
+
         #endregion
     }
 }

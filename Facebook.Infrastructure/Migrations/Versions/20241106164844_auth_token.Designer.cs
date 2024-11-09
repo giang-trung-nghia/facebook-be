@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Facebook.Infrastructure.Migrations.Versions
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241026105538_user_refresh_token_table")]
-    partial class user_refresh_token_table
+    [Migration("20241106164844_auth_token")]
+    partial class auth_token
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,14 +27,24 @@ namespace Facebook.Infrastructure.Migrations.Versions
 
             modelBuilder.Entity("Facebook.Domain.Entities.Auth.UserRefreshTokens", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("RefreshToken")
                         .IsRequired()
@@ -82,6 +92,9 @@ namespace Facebook.Infrastructure.Migrations.Versions
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

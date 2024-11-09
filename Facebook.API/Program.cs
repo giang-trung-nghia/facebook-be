@@ -1,6 +1,7 @@
 using Facebook.Application.IServices.IAuth;
 using Facebook.Application.IServices.IUsers;
 using Facebook.Application.Services.Auth;
+using Facebook.Application.Services.Jwt;
 using Facebook.Application.Services.Users;
 using Facebook.Domain.IRepositories;
 using Facebook.Domain.IRepositories.IAuth;
@@ -52,6 +53,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IJwtRepository, JwtRepository>();
 
 // CORS
@@ -68,6 +70,12 @@ builder.Services.AddCors(options =>
                       });
 });
 
+// logging
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();
+});
+
 #endregion
 var app = builder.Build();
 
@@ -80,6 +88,7 @@ if (app.Environment.IsDevelopment())
 
 #region Custome
 app.UseCors(MyAllowSpecificOrigins);
+app.UseAuthentication();
 #endregion
 
 app.UseHttpsRedirection();

@@ -26,14 +26,10 @@ namespace Facebook.Infrastructure.Repositories.Base
             return result.ToList();
         }
 
-        public Task<TEntity>? GetAsync(Guid id)
+        public async Task<TEntity> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<TEntity>? FindAsync(Guid id)
-        {
-            throw new NotImplementedException();
+            var result = await _context.Set<TEntity>().SingleOrDefaultAsync(e => e.Id == id);
+            return result;
         }
 
         public Task<List<TEntity>?> PagingAsync(int pageNumber, int pageSize, string searchKey)

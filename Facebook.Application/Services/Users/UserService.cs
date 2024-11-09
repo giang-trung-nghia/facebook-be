@@ -29,7 +29,12 @@ namespace Facebook.Application.Services.Users
                 CreatedDate = entity.CreatedDate,
                 Id = entity.Id,
                 ModifiedBy = entity.ModifiedBy,
-                ModifiedDate = entity.ModifiedDate
+                ModifiedDate = entity.ModifiedDate,
+                Dob = entity.Dob,
+                Email = entity.Email,
+                Name = entity.Name,
+                Phone = entity.Phone,
+                ProfilePicture = entity.ProfilePicture,
             };
 
             return user;

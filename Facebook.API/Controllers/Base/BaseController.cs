@@ -1,4 +1,5 @@
 ﻿using Facebook.Application.IServices.IBase;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.API.Controllers.Base
@@ -16,6 +17,7 @@ namespace Facebook.API.Controllers.Base
 
         #region GetAll
         [HttpGet]
+        [Authorize]
         public async Task<List<TEntityDto>> GetAllAsync()
         {
             var result = await BaseService.GetAllAsync();
@@ -27,6 +29,7 @@ namespace Facebook.API.Controllers.Base
         #region Get by id
         [HttpGet]
         [Route("{id}")]
+        [Authorize]
         public async Task<TEntityDto> GetAsync(Guid id)
         {
             var result = await BaseService.GetAsync(id);

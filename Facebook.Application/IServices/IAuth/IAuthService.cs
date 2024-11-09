@@ -16,10 +16,10 @@ namespace Facebook.Application.IServices.IAuth
         Task<UserDto> SignInAsync(SignInDto dto);
         Task<UserDto> SignUpAsync(SignUpDto dto);
         Task<UserDto> SignOutAsync(string username);
-        Task<bool> IsValidUserAsync(AuthEntity users);
         UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user);
-        UserRefreshTokens GetSavedRefreshTokens(string username, string refreshtoken);
+        UserRefreshTokens GetSavedRefreshTokens(Guid userId, string refreshtoken);
         bool DeleteUserRefreshTokens(string username, string refreshToken);
-        IActionResult RefreshToken(Token token);
+        //IActionResult RefreshToken(Token token);
+        Task<UserDto> SignInWithGoogleAsync(string googleId);
     }
 }
