@@ -1,21 +1,12 @@
-﻿using Azure.Core;
+﻿using Facebook.Application.Dtos.Common;
 using Facebook.Domain.Entities;
 using Facebook.Domain.Entities.Auth;
+using Facebook.Domain.Exceptions;
 using Facebook.Domain.IRepositories;
 using Facebook.Infrastructure.Migrations.Contexts;
-using Google.Apis.Auth;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Facebook.Infrastructure.Repositories
@@ -47,9 +38,20 @@ namespace Facebook.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<UserEntity> SignOutAsync(string username)
+        public async Task<ApiResponse> SignOutAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var userRefreshToken = await _context.UserRefreshToken
+                .FirstOrDefaultAsync(rt => rt.RefreshToken == refreshToken && rt.IsActive == true);
+
+            if (userRefreshToken == null)
+            {
+                throw new NotFoundException();
+            }
+
+            userRefreshToken.IsActive = false;
+            await _context.SaveChangesAsync();
+
+            return new ApiResponse(StatusCodes.Status200OK);
         }
 
         public async Task<UserEntity> SignUpAsync(SignUpEntity signUpEntity)

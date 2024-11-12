@@ -1,4 +1,5 @@
-﻿using Facebook.Domain.Entities;
+﻿using Facebook.Application.Dtos.Common;
+using Facebook.Domain.Entities;
 using Facebook.Domain.Entities.Auth;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,7 +16,7 @@ namespace Facebook.Domain.IRepositories
     {
         Task<UserEntity> SignInAsync(SignInEntity signInEntity);
         Task<UserEntity> SignUpAsync(SignUpEntity signUpEntity);
-        Task<UserEntity> SignOutAsync(string username);
+        Task<ApiResponse> SignOutAsync(string refreshToken);
         UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user);
         UserRefreshTokens GetSavedRefreshTokens(Guid userId, string refreshtoken);
         bool DeleteUserRefreshTokens(string username, string refreshToken);

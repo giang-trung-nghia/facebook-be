@@ -126,15 +126,6 @@ namespace Facebook.API.Controllers
             return Content(script, "text/html");
         }
 
-        private GoogleJsonWebSignature.Payload ValidateGoogleIdToken(string idToken)
-        {
-            var settings = new GoogleJsonWebSignature.ValidationSettings
-            {
-                Audience = new List<string> { _configuration["Authentication:Google:ClientId"] }
-            };
-            return GoogleJsonWebSignature.ValidateAsync(idToken, settings).Result;
-        }
-
         [AllowAnonymous]
         [HttpPost]
         [Route("refresh-token")]
@@ -167,6 +158,14 @@ namespace Facebook.API.Controllers
             _authService.AddUserRefreshTokens(obj);
 
             return Ok(newJwtToken);
+        }
+
+        [HttpPost]
+        [Route("sign-out")]
+        public async Task<IActionResult> SignOut([FromBody] string refreshToken)
+        {
+            await _authService.SignOutAsync(refreshToken);
+            return Ok("1");
         }
 
         private string GenerateJwtToken(string idToken)

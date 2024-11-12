@@ -1,15 +1,11 @@
 ﻿using Facebook.Application.Dtos.Auth;
+using Facebook.Application.Dtos.Common;
 using Facebook.Application.Dtos.Users;
 using Facebook.Application.IServices.IAuth;
 using Facebook.Domain.Entities;
 using Facebook.Domain.Entities.Auth;
 using Facebook.Domain.IRepositories;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Facebook.Application.Services.Auth
 {
@@ -58,13 +54,11 @@ namespace Facebook.Application.Services.Auth
             return result;
         }
 
-        public async Task<UserDto> SignOutAsync(string username)
+        public async Task<ApiResponse> SignOutAsync(string refreshToken)
         {
-            var entity = await _AuthRepository.SignOutAsync(username);
-
-            var entityDtos = MapEntityToEntityDto(entity);
-
-            return entityDtos;
+            await _AuthRepository.SignOutAsync(refreshToken);
+            
+            return new ApiResponse(StatusCodes.Status200OK);
         }
 
         public async Task<UserDto> SignUpAsync(SignUpDto dto)
@@ -107,7 +101,6 @@ namespace Facebook.Application.Services.Auth
 
             return user;
         }
-
 
         //public IActionResult RefreshToken(Token token)
         //{
