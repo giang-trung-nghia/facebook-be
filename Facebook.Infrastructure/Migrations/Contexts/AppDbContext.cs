@@ -13,7 +13,7 @@ namespace Facebook.Infrastructure.Migrations.Contexts
     public class AppDbContext : DbContext
     {
         public DbSet<UserEntity> Users { get; set; }
-        public virtual DbSet<UserRefreshTokens> UserRefreshToken { get; set; }
+        public virtual DbSet<UserRefreshTokenEntity> UserRefreshToken { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

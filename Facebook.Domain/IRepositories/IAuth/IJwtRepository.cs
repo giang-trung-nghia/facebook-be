@@ -11,7 +11,7 @@ namespace Facebook.Domain.IRepositories.IAuth
     public interface IJwtRepository
     {
         Token GenerateToken(Guid userId);
-        Token GenerateRefreshToken(Guid userId);
+        Token RefreshToken(Token token);
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }

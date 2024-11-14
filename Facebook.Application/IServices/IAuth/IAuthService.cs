@@ -7,12 +7,12 @@ namespace Facebook.Application.IServices.IAuth
 {
     public interface IAuthService
     {
-        Task<UserDto> SignInAsync(SignInDto dto);
+        Task<Token> SignInAsync(SignInDto dto);
         Task<UserDto> SignUpAsync(SignUpDto dto);
         Task<ApiResponse> SignOutAsync(string refreshToken);
-        UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user);
-        UserRefreshTokens GetSavedRefreshTokens(Guid userId, string refreshtoken);
-        bool DeleteUserRefreshTokens(string username, string refreshToken);
+        UserRefreshTokenEntity AddUserRefreshTokens(UserRefreshTokenEntity user);
+        UserRefreshTokenEntity GetSavedRefreshTokens(Guid userId, string refreshtoken);
+        bool DeleteUserRefreshTokens(Guid userId, string refreshToken);
         //IActionResult RefreshToken(Token token);
         Task<UserDto> SignInWithGoogleAsync(string googleId);
     }

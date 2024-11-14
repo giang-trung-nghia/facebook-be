@@ -28,28 +28,10 @@ namespace Facebook.API.Controllers
         [HttpPost("sign-in")]
         public async Task<dynamic> SignIn([FromBody] SignInDto body)
         {
-            var user = await _authService.SignInAsync(body);
+            var token = await _authService.SignInAsync(body);
 
-            if (user == null)
-            {
-                return Unauthorized("Email does not exist!");
-            }
+            return Ok(token);
 
-            var token = _jwtService.GenerateToken(user.Id);
-
-            if (token == null)
-            {
-                return Unauthorized("Invalid Attempt..");
-            }
-
-            UserRefreshTokens obj = new UserRefreshTokens
-            {
-                RefreshToken = token.RefreshToken,
-                UserName = body.Email
-            };
-
-            _authService.AddUserRefreshTokens(obj);
-            
             // Set cookies
             //var accessTokenCookieOptions = new CookieOptions
             //{
@@ -70,7 +52,6 @@ namespace Facebook.API.Controllers
             //Response.Cookies.Append("accessToken", token.AccessToken, accessTokenCookieOptions);
             //Response.Cookies.Append("refreshToken", token.RefreshToken, refreshTokenCookieOptions);
 
-            return Ok(token);
         }
 
         [HttpPost("sign-up")]
@@ -129,35 +110,11 @@ namespace Facebook.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("refresh-token")]
-        public IActionResult Refresh(Token token)
+        public IActionResult RefreshToken([FromBody] Token token)
         {
-            var principal = _jwtService.GetPrincipalFromExpiredToken(token.AccessToken);
-            var userId = principal.Identity?.Name;
+            var result = _jwtService.RefreshToken(token);
 
-            var savedRefreshToken = _authService.GetSavedRefreshTokens(Guid.Parse(userId), token.RefreshToken);
-
-            if (savedRefreshToken.RefreshToken != token.RefreshToken)
-            {
-                return Unauthorized("Invalid attempt!");
-            }
-
-            var newJwtToken = _jwtService.GenerateRefreshToken(Guid.Parse(userId));
-
-            if (newJwtToken == null)
-            {
-                return Unauthorized("Invalid attempt!");
-            }
-
-            UserRefreshTokens obj = new UserRefreshTokens
-            {
-                RefreshToken = newJwtToken.RefreshToken,
-                UserName = userId
-            };
-
-            _authService.DeleteUserRefreshTokens(userId, token.RefreshToken);
-            _authService.AddUserRefreshTokens(obj);
-
-            return Ok(newJwtToken);
+            return Ok(result);
         }
 
         [HttpPost]

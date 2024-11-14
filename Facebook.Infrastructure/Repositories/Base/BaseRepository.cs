@@ -1,12 +1,8 @@
 ﻿using Facebook.Domain.Entities.Base;
+using Facebook.Domain.Exceptions;
 using Facebook.Domain.IRepositories.IBase;
 using Facebook.Infrastructure.Migrations.Contexts;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Facebook.Infrastructure.Repositories.Base
 {
@@ -29,6 +25,11 @@ namespace Facebook.Infrastructure.Repositories.Base
         public async Task<TEntity> GetAsync(Guid id)
         {
             var result = await _context.Set<TEntity>().SingleOrDefaultAsync(e => e.Id == id);
+
+            if (result == null)
+            {
+                throw new NotFoundException($"Not found user {id}", "Not Found User!!!");
+            }
             return result;
         }
 

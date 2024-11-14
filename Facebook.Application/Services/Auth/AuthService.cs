@@ -18,39 +18,32 @@ namespace Facebook.Application.Services.Auth
             _AuthRepository = authRepository;
         }
 
-        public async Task<UserDto> SignInAsync(SignInDto dto)
+        public async Task<Token> SignInAsync(SignInDto dto)
         {
-            var entity = await _AuthRepository.SignInAsync(new SignInEntity
+            var token = await _AuthRepository.SignInAsync(new SignInEntity
             {
                 Password = dto.Password,
                 Email = dto.Email
             });
 
-            if (entity == null)
-            {
-                return null;
-            }
-
-            var entityDtos = MapEntityToEntityDto(entity);
-
-            return entityDtos;
+            return token;
         }
 
-        public UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user)
+        public UserRefreshTokenEntity AddUserRefreshTokens(UserRefreshTokenEntity user)
         {
             var result = _AuthRepository.AddUserRefreshTokens(user);
             return result;
         }
 
-        public UserRefreshTokens GetSavedRefreshTokens(Guid userId, string refreshtoken)
+        public UserRefreshTokenEntity GetSavedRefreshTokens(Guid userId, string refreshtoken)
         {
             var result = _AuthRepository.GetSavedRefreshTokens(userId, refreshtoken);
             return result;
         }
 
-        public bool DeleteUserRefreshTokens(string username, string refreshToken)
+        public bool DeleteUserRefreshTokens(Guid userId, string refreshToken)
         {
-            var result = _AuthRepository.DeleteUserRefreshTokens(username, refreshToken);
+            var result = _AuthRepository.DeleteUserRefreshTokens(userId, refreshToken);
             return result;
         }
 

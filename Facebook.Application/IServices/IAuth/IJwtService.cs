@@ -15,7 +15,7 @@ namespace Facebook.Application.IServices.IAuth
     public interface IJwtService
     {
         Token GenerateToken(Guid userId);
-        Token GenerateRefreshToken(Guid userId);
+        Token RefreshToken(Token token);
         ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }

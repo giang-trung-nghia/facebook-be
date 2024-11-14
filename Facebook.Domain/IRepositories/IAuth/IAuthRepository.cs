@@ -14,12 +14,12 @@ namespace Facebook.Domain.IRepositories
 {
     public interface IAuthRepository
     {
-        Task<UserEntity> SignInAsync(SignInEntity signInEntity);
+        Task<Token> SignInAsync(SignInEntity signInEntity);
         Task<UserEntity> SignUpAsync(SignUpEntity signUpEntity);
         Task<ApiResponse> SignOutAsync(string refreshToken);
-        UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user);
-        UserRefreshTokens GetSavedRefreshTokens(Guid userId, string refreshtoken);
-        bool DeleteUserRefreshTokens(string username, string refreshToken);
+        UserRefreshTokenEntity AddUserRefreshTokens(UserRefreshTokenEntity user);
+        UserRefreshTokenEntity GetSavedRefreshTokens(Guid userId, string refreshtoken);
+        bool DeleteUserRefreshTokens(Guid userId, string refreshToken);
         Task<UserEntity> SignInWithGoogleAsync(string googleIdToken);
         Task<UserEntity> SignUpWithGoogleAsync(Payload payload);
         //IActionResult SignInGoogle();

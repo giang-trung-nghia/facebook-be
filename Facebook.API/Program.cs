@@ -1,3 +1,4 @@
+using Facebook.API.Middlewares;
 using Facebook.Application.IServices.IAuth;
 using Facebook.Application.IServices.IUsers;
 using Facebook.Application.Services.Auth;
@@ -42,7 +43,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = configuration["JWT:Issuer"],
             ValidAudience = configuration["JWT:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"])),
+            ClockSkew = TimeSpan.Zero
         };
     });
 
@@ -54,7 +56,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddScoped<IJwtRepository, JwtRepository>();
+builder.Services.AddScoped<IJwtRepository>(sp =>
+    new JwtRepository(sp.GetRequiredService<IConfiguration>(),
+                      () => sp.GetRequiredService<IAuthRepository>()));
 
 // CORS
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -94,6 +98,8 @@ app.UseAuthentication();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 

@@ -23,12 +23,6 @@ namespace Facebook.Application.Services.Jwt
             _JwtRepository = jwtRepository;
         }
 
-        public Token GenerateRefreshToken(Guid userId)
-        {
-            var result = _JwtRepository.GenerateRefreshToken(userId);
-            return result;
-        }
-
         public Token GenerateToken(Guid userId)
         {
             var result = _JwtRepository.GenerateToken(userId);
@@ -38,6 +32,13 @@ namespace Facebook.Application.Services.Jwt
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var result = _JwtRepository.GetPrincipalFromExpiredToken(token);
+            return result;
+        }
+
+        public  Token RefreshToken(Token token)
+        {
+            var result = _JwtRepository.RefreshToken(token);
+
             return result;
         }
     }

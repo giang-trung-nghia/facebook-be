@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 
 namespace Facebook.Domain.Entities.Auth
 {
-    public class UserRefreshTokens : BaseEntity
+    public class UserRefreshTokenEntity : BaseEntity
     {
         [Required]
-        public string UserName { get; set; }
+        public Guid UserId { get; set; }
 
         [Required]
         public string RefreshToken { get; set; }
+        public DateTime ExpiredDate { get; set; }
 
         public bool IsActive { get; set; } = true;
     }

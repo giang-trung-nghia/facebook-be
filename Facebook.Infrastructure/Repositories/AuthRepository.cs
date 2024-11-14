@@ -3,6 +3,7 @@ using Facebook.Domain.Entities;
 using Facebook.Domain.Entities.Auth;
 using Facebook.Domain.Exceptions;
 using Facebook.Domain.IRepositories;
+using Facebook.Domain.IRepositories.IAuth;
 using Facebook.Infrastructure.Migrations.Contexts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -15,27 +16,31 @@ namespace Facebook.Infrastructure.Repositories
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
-        public AuthRepository(AppDbContext context, IConfiguration configuration)
+        private readonly IJwtRepository _jwtRepository;
+        public AuthRepository(AppDbContext context, IConfiguration configuration, IJwtRepository jwtRepository)
         {
             _context = context;
             _configuration = configuration;
+            _jwtRepository = jwtRepository;
         }
 
         #region Action
-        public async Task<UserEntity> SignInAsync(SignInEntity signInEntity)
+        public async Task<Token> SignInAsync(SignInEntity signInEntity)
         {
-            var result = await _context.Users.SingleOrDefaultAsync(a => a.Email == signInEntity.Email);
-            if (result == null)
+            var user = await _context.Users.SingleOrDefaultAsync(a => a.Email == signInEntity.Email);
+            if (user == null)
             {
                 return null;
             }
 
-            if (result.Password != signInEntity.Password)
+            if (user.Password != signInEntity.Password)
             {
                 throw new Exception("Password wrong");
             }
 
-            return result;
+            var token = _jwtRepository.GenerateToken(user.Id);
+
+            return token;
         }
 
         public async Task<ApiResponse> SignOutAsync(string refreshToken)
@@ -75,16 +80,16 @@ namespace Facebook.Infrastructure.Repositories
         #endregion
 
         #region Auth
-        public UserRefreshTokens AddUserRefreshTokens(UserRefreshTokens user)
+        public UserRefreshTokenEntity AddUserRefreshTokens(UserRefreshTokenEntity user)
         {
             _context.UserRefreshToken.Add(user);
             _context.SaveChanges();
             return user;
         }
 
-        public bool DeleteUserRefreshTokens(string username, string refreshToken)
+        public bool DeleteUserRefreshTokens(Guid userId, string refreshToken)
         {
-            var item = _context.UserRefreshToken.FirstOrDefault(x => x.UserName == username && x.RefreshToken == refreshToken);
+            var item = _context.UserRefreshToken.FirstOrDefault(x => x.UserId == userId && x.RefreshToken == refreshToken);
             if (item != null)
             {
                 _context.UserRefreshToken.Remove(item);
@@ -93,9 +98,14 @@ namespace Facebook.Infrastructure.Repositories
             return false;
         }
 
-        public UserRefreshTokens GetSavedRefreshTokens(Guid userId, string refreshToken)
+        public UserRefreshTokenEntity GetSavedRefreshTokens(Guid userId, string refreshToken)
         {
-            var result = _context.UserRefreshToken.FirstOrDefault(x => x.Id == userId && x.RefreshToken == refreshToken && x.IsActive == true);
+            var result = _context.UserRefreshToken.FirstOrDefault(x => x.UserId == userId && x.RefreshToken == refreshToken && x.IsActive == true);
+
+            if (result == null)
+            {
+                throw new NotFoundException("Not found refreshToken", "Un authorization");
+            }
             return result;
         }
 
