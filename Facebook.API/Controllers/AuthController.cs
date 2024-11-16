@@ -98,10 +98,10 @@ namespace Facebook.API.Controllers
             var user = await _authService.SignInWithGoogleAsync(googleIdToken);
 
             // Step 3: Generate a JWT Token
-            var jwtToken = GenerateJwtToken(googleIdToken);
+            var jwtToken = _jwtService.GenerateToken(user.Id);
             var script = $@" 
                 <script>
-                    window.opener.postMessage({{ token: '{jwtToken}' }}, '*');
+                    window.opener.postMessage({{ accessToken: '{jwtToken.AccessToken}', refreshToken: '{jwtToken.RefreshToken}' }}, '*');
                     window.close();
                 </script>";
             return Content(script, "text/html");
@@ -123,34 +123,6 @@ namespace Facebook.API.Controllers
         {
             await _authService.SignOutAsync(refreshToken);
             return Ok("1");
-        }
-
-        private string GenerateJwtToken(string idToken)
-        {
-            var key = _configuration["Jwt:Key"];
-            var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
-            var expireMinutes = int.Parse(_configuration["Jwt:ExpireMinutes"]);
-
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, idToken),
-                new Claim(JwtRegisteredClaimNames.Sid, idToken),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var keyBytes = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            var creds = new SigningCredentials(keyBytes, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(expireMinutes),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

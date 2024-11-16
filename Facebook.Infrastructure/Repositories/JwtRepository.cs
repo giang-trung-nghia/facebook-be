@@ -3,6 +3,7 @@ using Facebook.Domain.Entities.Auth;
 using Facebook.Domain.Exceptions;
 using Facebook.Domain.IRepositories;
 using Facebook.Domain.IRepositories.IAuth;
+using Facebook.Domain.IRepositories.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -31,7 +32,7 @@ namespace Facebook.Infrastructure.Repositories
         #region JWT token
         public Token GenerateToken(Guid userId)
         {
-            var result = GenerateJWTTokens(userId);
+            var result = GenerateJWTTokens(userId.ToString());
             return result;
         }
 
@@ -50,7 +51,7 @@ namespace Facebook.Infrastructure.Repositories
                 throw new UnauthorizationException($"Refresh token {token.RefreshToken} is expired", "Please login again");
             }
 
-            var newAccessToken = GenerateAccessToken(Guid.Parse(userId));
+            var newAccessToken = GenerateAccessToken(userId);
 
             return new Token {AccessToken=newAccessToken, RefreshToken=token.RefreshToken };
         }
@@ -84,12 +85,12 @@ namespace Facebook.Infrastructure.Repositories
         #endregion
 
         #region Private Function
-        private Token GenerateJWTTokens(Guid userId)
+        private Token GenerateJWTTokens(string id)
         {
             try
             {
-                var accessToken = GenerateAccessToken(userId);
-                var refreshToken = GenerateRefreshTokenEntity(userId);
+                var accessToken = GenerateAccessToken(id);
+                var refreshToken = GenerateRefreshTokenEntity(id);
 
                 return new Token { AccessToken = accessToken, RefreshToken = refreshToken.RefreshToken };
             }
@@ -99,7 +100,7 @@ namespace Facebook.Infrastructure.Repositories
             }
         }
 
-        private string GenerateAccessToken(Guid userId)
+        private string GenerateAccessToken(string id)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
@@ -107,7 +108,7 @@ namespace Facebook.Infrastructure.Repositories
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                        new Claim(FbJwtClaimType.Id, userId.ToString())
+                        new Claim(FbJwtClaimType.Id, id)
                 }),
                 Expires = DateTime.Now.AddMinutes(int.Parse(_configuration["JWT:ExpireMinutes"])),
                 Issuer = _configuration["JWT:Issuer"],
@@ -120,12 +121,12 @@ namespace Facebook.Infrastructure.Repositories
             return result;
         }
 
-        private UserRefreshTokenEntity GenerateRefreshTokenEntity(Guid userId)
+        private UserRefreshTokenEntity GenerateRefreshTokenEntity(string id)
         {
             UserRefreshTokenEntity entity = new UserRefreshTokenEntity
             {
                 RefreshToken = GenerateRefreshToken(),
-                UserId = userId,
+                UserId = Guid.Parse(id),
                 ExpiredDate = DateTime.Now.AddMinutes(int.Parse(_configuration["JWT:ExpireRefreshToken"]))
             };
             _authRepository.AddUserRefreshTokens(entity);
