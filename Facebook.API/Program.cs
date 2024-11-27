@@ -64,6 +64,8 @@ builder.Services.AddScoped<IJwtRepository>(sp =>
     new JwtRepository(sp.GetRequiredService<IConfiguration>(),
                       () => sp.GetRequiredService<IAuthRepository>()));
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // CORS
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>

@@ -1,4 +1,5 @@
-﻿using Facebook.Application.Dtos.Users;
+﻿using AutoMapper;
+using Facebook.Application.Dtos.Users;
 using Facebook.Application.IServices.IBase;
 using Facebook.Application.IServices.IUsers;
 using Facebook.Application.Services.Base;
@@ -17,10 +18,12 @@ namespace Facebook.Application.Services.Users
     public class UserService : BaseService<UserEntity, UserDto, UserCreateDto, UserUpdateDto>, IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository) : base(userRepository)
+        public UserService(IUserRepository userRepository, IMapper mapper) : base(userRepository)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public override async Task ValidateInsertBusiness(UserEntity user)
@@ -38,57 +41,24 @@ namespace Facebook.Application.Services.Users
 
         public override UserDto MapEntityToEntityDto(UserEntity userEntity)
         {
-            var userDto = new UserDto
-            {
-                CreatedBy = userEntity.CreatedBy,
-                CreatedDate = userEntity.CreatedDate,
-                Id = userEntity.Id,
-                ModifiedBy = userEntity.ModifiedBy,
-                ModifiedDate = userEntity.ModifiedDate,
-                Dob = userEntity.Dob,
-                Email = userEntity.Email,
-                Name = userEntity.Name,
-                Phone = userEntity.Phone,
-                ProfilePicture = userEntity.ProfilePicture,
-                Gender = userEntity.Gender,
-                Location = userEntity.Location,
-                University = userEntity.University,
-                WorkAt = userEntity.WorkAt
-
-            };
+            var userDto = _mapper.Map<UserDto>(userEntity);
 
             return userDto;
         }
 
         public override UserEntity MapInsertDtoToEntity(UserCreateDto insertDto)
         {
-            var userEntity = new UserEntity
-            {
-                Email = insertDto.Email,
-                Name = insertDto.Name,
-                Password = insertDto.Password,
-                ProfilePicture = insertDto?.ProfilePicture,
-            };
+            var userEntity = _mapper.Map<UserEntity>(insertDto);
 
             return userEntity;
         }
 
         public override UserEntity MapUpdateDtoToEntity(UserUpdateDto updateDto, UserEntity entity)
         {
-            var userEntity = new UserEntity
-            {
-                Email = updateDto.Email,
-                Name = updateDto.Name,
-                Password = updateDto.Password,
-                Gender = updateDto?.Gender ?? Gender.Other,
-                ProfilePicture = updateDto?.ProfilePicture,
-                Location = updateDto?.Location,
-                Dob= updateDto?.Dob,
-                Phone = updateDto?.Phone,
-                University= updateDto?.University,
-                WorkAt= updateDto?.WorkAt
-
-            };
+            // map từ source -> destination => gộp source vào destination
+            // các trường source nếu có giá trị thì sẽ gán lại vào entity
+            // nếu source = default | null => lấy giá trị của entity
+            var userEntity = _mapper.Map(updateDto, entity);
 
             return userEntity;
         }
