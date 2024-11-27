@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.API.Controllers
 {
-    public class UserController : BaseController<UserDto>
+    public class UserController : BaseController<UserDto, UserCreateDto, UserUpdateDto>
     {
         private readonly IUserService _userService;
 
@@ -14,17 +14,5 @@ namespace Facebook.API.Controllers
         {
             _userService = userService;
         }
-
-        //[HttpGet]
-        //[Authorize]
-        //[Route("GetAll")]
-        //public async Task<List<UserDto>> GetAllAsync()
-        //{
-
-        //    var result = await _userService.GetAllAsync();
-
-        //    return result;
-
-        //}
     }
 }

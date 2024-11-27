@@ -12,6 +12,9 @@ namespace Facebook.Domain.Exceptions
         public ConflictException() : base(StatusCodes.Status409Conflict)
         {
         }
+        public ConflictException(string userMessage) : base(StatusCodes.Status409Conflict, userMessage)
+        {
+        }
 
         public ConflictException(string devMessage, string userMessage) : base(StatusCodes.Status409Conflict, devMessage, userMessage)
         {

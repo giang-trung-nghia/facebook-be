@@ -96,7 +96,7 @@ namespace Facebook.Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                return null;
+                throw new UnauthorizationException("Generate JWT Tokens fail, please check");
             }
         }
 

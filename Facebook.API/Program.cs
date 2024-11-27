@@ -1,3 +1,4 @@
+using Facebook.API.Handlers;
 using Facebook.API.Middlewares;
 using Facebook.Application.IServices.IAuth;
 using Facebook.Application.IServices.IUsers;
@@ -19,7 +20,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter()); // Json converter to accept type Date from Frontend to DateOnly in Backend
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

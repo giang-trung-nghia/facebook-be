@@ -36,6 +36,13 @@ namespace Facebook.Domain.Exceptions
             ErrorCode = errorCode;
         }
 
+        public BaseException(int errorCode, string userMessage)
+        {
+            ErrorCode = errorCode;
+            DevMessage = userMessage;
+            UserMessage = userMessage;
+        }
+
         public BaseException(int errorCode, string devMessage, string userMessage)
         {
             ErrorCode = errorCode;

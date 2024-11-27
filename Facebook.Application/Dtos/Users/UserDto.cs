@@ -1,4 +1,5 @@
 ﻿using Facebook.Application.Dtos.Base;
+using Facebook.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,9 @@ namespace Facebook.Application.Dtos.Users
         public string? Phone { get; set; }
         public DateOnly? Dob { get; set; }
         public string? ProfilePicture { get; set; }
+        public Gender Gender { get; set; }
+        public string? WorkAt { get; set; }
+        public string? Location { get; set; }
+        public string? University { get; set; }
     }
 }

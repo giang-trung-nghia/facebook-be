@@ -60,7 +60,7 @@ namespace Facebook.API.Middlewares
             {
                 context.Response.StatusCode = StatusCodes.Status406NotAcceptable;
                 await context.Response.WriteAsync(
-                    text: new BusinessException(unauthorException.DevMessage, unauthorException.UserMessage)
+                    text: new UnauthorizationException(unauthorException.DevMessage, unauthorException.UserMessage)
                     .ToString()
                 );
                 _logger.Log(LogLevel.Error, unauthorException.DevMessage);

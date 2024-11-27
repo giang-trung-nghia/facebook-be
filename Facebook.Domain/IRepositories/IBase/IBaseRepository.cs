@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Facebook.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,22 @@ namespace Facebook.Domain.IRepositories.IBase
     {
         Task<List<TEntity>> GetAllAsync();
 
-        Task<TEntity>? GetAsync(Guid id);
+        Task<TEntity> GetAsync(Guid id);
 
-        Task<List<TEntity>?> PagingAsync(int pageNumber, int pageSize, string searchKey);
+        Task<List<TEntity>> PagingAsync(
+            int pageNumber,
+            int pageSize,
+            SortOption? sort,
+            string? sortBy,
+            string? searchKey,
+            string? searchBy);
+
+        Task<TEntity> InsertAsync(TEntity entity);
+
+        Task<TEntity> UpdateAsync(Guid id, TEntity entity);
+
+        Task<int> DeleteAsync(Guid id);
+
 
     }
 }

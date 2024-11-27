@@ -13,6 +13,10 @@ namespace Facebook.Domain.Exceptions
         {
         }
 
+        public UnauthorizationException(string userMessage) : base(StatusCodes.Status401Unauthorized, userMessage, userMessage)
+        {
+        }
+
         public UnauthorizationException(string devMessage, string userMessage) : base(StatusCodes.Status401Unauthorized, devMessage, userMessage)
         {
         }

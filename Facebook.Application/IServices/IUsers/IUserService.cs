@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Facebook.Application.IServices.IUsers
 {
-    public interface IUserService : IBaseService<UserDto>
+    public interface IUserService : IBaseService<UserDto, UserCreateDto, UserUpdateDto>
     {
     }
 }
