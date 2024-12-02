@@ -106,6 +106,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<FormatDateMiddleware>();
 
 app.MapControllers();
 
