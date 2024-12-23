@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Facebook.Application.Dtos.Base;
 using Facebook.Application.Dtos.Users;
 using Facebook.Application.IServices.IBase;
 using Facebook.Application.IServices.IUsers;
@@ -61,6 +62,36 @@ namespace Facebook.Application.Services.Users
             var userEntity = _mapper.Map(updateDto, entity);
 
             return userEntity;
+        }
+
+        public async Task<PagingResponse<UserDto>> GetPeopleMaybeYouKnow(Guid id, int pageNumber, int pageSize)
+        {
+            var people = await _userRepository.GetPeopleMaybeYouKnow(id, pageNumber, pageSize);
+            var result = new PagingResponse<UserDto>()
+            {
+                data = _mapper.Map<List<UserDto>>(people),
+                page = pageNumber,
+                pageSize = pageSize,
+                total = people.Count, // @todo: not done, need to create other reposity to get correct data
+                totalPage = people.Count // @todo: not done, need to create other reposity to get correct data
+            };
+
+            return result;
+        }
+
+        public async Task<PagingResponse<UserRelationshipDto>> GetAddFriendOffers(Guid id, int pageNumber, int pageSize)
+        {
+            var people = await _userRepository.GetAddFriendOffers(id, pageNumber, pageSize);
+            var result = new PagingResponse<UserRelationshipDto>()
+            {
+                data = _mapper.Map<List<UserRelationshipDto>>(people),
+                page = pageNumber,
+                pageSize = pageSize,
+                total = people.Count, // @todo: not done, need to create other reposity to get correct data
+                totalPage = people.Count // @todo: not done, need to create other reposity to get correct data
+            };
+
+            return result;
         }
     }
 }

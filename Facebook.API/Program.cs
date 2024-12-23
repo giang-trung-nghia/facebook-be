@@ -1,12 +1,15 @@
 using Facebook.API.Handlers;
 using Facebook.API.Middlewares;
 using Facebook.Application.IServices.IAuth;
+using Facebook.Application.IServices.IRelationship;
 using Facebook.Application.IServices.IUsers;
 using Facebook.Application.Services.Auth;
 using Facebook.Application.Services.Jwt;
+using Facebook.Application.Services.Relationship;
 using Facebook.Application.Services.Users;
 using Facebook.Domain.IRepositories;
 using Facebook.Domain.IRepositories.IAuth;
+using Facebook.Domain.IRepositories.IRelationship;
 using Facebook.Domain.IRepositories.Users;
 using Facebook.Infrastructure.Migrations.Contexts;
 using Facebook.Infrastructure.Repositories;
@@ -57,6 +60,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRelationshipService, RelationshipService>();
+builder.Services.AddScoped<IRelationshipRepository, RelationshipRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();

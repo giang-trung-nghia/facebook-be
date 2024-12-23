@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Facebook.Domain\Facebook.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\Common\" />
-  </ItemGroup>
-
 </Project>

@@ -13,6 +13,10 @@ namespace Facebook.Domain.Exceptions
         {
         }
 
+        public NotFoundException(string userMessage) : base(StatusCodes.Status404NotFound, userMessage, userMessage)
+        {
+        }
+
         public NotFoundException(string devMessage, string userMessage) : base(StatusCodes.Status404NotFound, devMessage, userMessage)
         {
         }

@@ -1,4 +1,5 @@
-﻿using Facebook.Domain.Entities.Base;
+﻿using Facebook.Application.Dtos.Base;
+using Facebook.Domain.Entities.Base;
 using Facebook.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Facebook.Application.IServices.IBase
 {
-    public interface IBaseService<TEntityDto, TInsertDto, TUpdateDto>
+    public interface IBaseService<TEntityDto, TCreateDto, TUpdateDto>
     {
         Task<List<TEntityDto>> GetAllAsync();
 
         Task<TEntityDto> GetAsync(Guid id);
 
-        Task<List<TEntityDto>> PagingAsync(
+        Task<PagingResponse<TEntityDto>> PagingAsync(
             int pageNumber, 
             int pageSize,
             SortOption? sort,
@@ -22,7 +23,7 @@ namespace Facebook.Application.IServices.IBase
             string? searchKey,
         string? searchBy);
 
-        Task<TEntityDto> InsertAsync(TInsertDto entity);
+        Task<TEntityDto> InsertAsync(TCreateDto entity);
 
         Task<TEntityDto> UpdateAsync(Guid id, TUpdateDto entity);
 

@@ -13,6 +13,10 @@ namespace Facebook.Domain.Exceptions
         {
         }
 
+        public BusinessException(string userMessage) : base(StatusCodes.Status500InternalServerError, userMessage, userMessage)
+        {
+        }
+
         public BusinessException(string devMessage, string userMessage) : base(StatusCodes.Status500InternalServerError, devMessage, userMessage)
         {
         }

@@ -1,4 +1,5 @@
-﻿using Facebook.Application.IServices.IBase;
+﻿using Facebook.Application.Dtos.Base;
+using Facebook.Application.IServices.IBase;
 using Facebook.Domain.Entities.Base;
 using Facebook.Domain.Enums;
 using Facebook.Domain.IRepositories.IBase;
@@ -21,7 +22,7 @@ namespace Facebook.Application.Services.Base
 
 
         #region Get 
-        public async Task<TEntityDto> GetAsync(Guid id)
+        public virtual async Task<TEntityDto> GetAsync(Guid id)
         {
             var entity = await BaseRepository.GetAsync(id);
 
@@ -30,7 +31,7 @@ namespace Facebook.Application.Services.Base
             return entityDto;
         }
 
-        public async Task<List<TEntityDto>> GetAllAsync()
+        public virtual async Task<List<TEntityDto>> GetAllAsync()
         {
             var entities = await BaseRepository.GetAllAsync();
 
@@ -40,18 +41,28 @@ namespace Facebook.Application.Services.Base
         }
 
 
-        public async Task<List<TEntityDto>> PagingAsync(int pageNumber, int pageSize, SortOption? sort, string? sortBy, string? searchKey, string? searchBy)
+        public virtual async Task<PagingResponse<TEntityDto>> PagingAsync(int pageNumber, int pageSize, SortOption? sort, string? sortBy, string? searchKey, string? searchBy)
         {
             var entities = await BaseRepository.PagingAsync(pageNumber, pageSize, sort, sortBy, searchKey, searchBy);
 
             var entityDtos = entities.Select(entity => MapEntityToEntityDto(entity)).ToList();
-            return entityDtos;
+
+            var pagingResult = new PagingResponse<TEntityDto>
+            {
+                data = entityDtos,
+                page = pageNumber,
+                pageSize = pageSize,
+                total = entityDtos.Count, // @todo: not done, need to create other reposity to get all record
+                totalPage = entityDtos.Count // @todo: not done, need to create other reposity to get all record
+            };
+
+            return pagingResult;
 
         }
         #endregion
 
 
-        public async Task<TEntityDto> InsertAsync(TInsertDto insertDto)
+        public virtual async Task<TEntityDto> InsertAsync(TInsertDto insertDto)
         {
             var entity = MapInsertDtoToEntity(insertDto);
 
@@ -62,9 +73,7 @@ namespace Facebook.Application.Services.Base
 
             if (entity is BaseEntity baseEntity)
             {
-                baseEntity.CreatedBy ??= "nghia.giangtrung";
                 baseEntity.CreatedDate ??= DateTime.Now;
-                baseEntity.ModifiedBy ??= "nghia.giangtrung";
                 baseEntity.ModifiedDate ??= DateTime.Now;
             }
 
@@ -77,13 +86,12 @@ namespace Facebook.Application.Services.Base
             return entityDto;
         }
 
-        public async Task<TEntityDto> UpdateAsync(Guid id, TUpdateDto updateDto)
+        public virtual async Task<TEntityDto> UpdateAsync(Guid id, TUpdateDto updateDto)
         {
             var entity = await BaseRepository.GetAsync(id);
 
             if (entity is BaseEntity baseEntity)    
             {
-                baseEntity.ModifiedBy ??= "nghia.giangtrung";
                 baseEntity.ModifiedDate = DateTime.Now;
             }
 
@@ -98,7 +106,7 @@ namespace Facebook.Application.Services.Base
             return result;
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public virtual async Task<int> DeleteAsync(Guid id)
         {
             var result = await BaseRepository.DeleteAsync(id);
 

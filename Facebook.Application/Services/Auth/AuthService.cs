@@ -1,4 +1,5 @@
-﻿using Facebook.Application.Dtos.Auth;
+﻿using AutoMapper;
+using Facebook.Application.Dtos.Auth;
 using Facebook.Application.Dtos.Common;
 using Facebook.Application.Dtos.Users;
 using Facebook.Application.IServices.IAuth;
@@ -12,10 +13,12 @@ namespace Facebook.Application.Services.Auth
     public class AuthService : IAuthService
     {
         private readonly IAuthRepository _AuthRepository;
+        private readonly IMapper _mapper;
 
-        public AuthService(IAuthRepository authRepository)
+        public AuthService(IAuthRepository authRepository, IMapper mapper)
         {
             _AuthRepository = authRepository;
+            _mapper = mapper;
         }
 
         public async Task<Token> SignInAsync(SignInDto dto)
@@ -78,19 +81,7 @@ namespace Facebook.Application.Services.Auth
 
         public UserDto MapEntityToEntityDto(UserEntity entity)
         {
-            var user = new UserDto
-            {
-                CreatedBy = entity.CreatedBy,
-                CreatedDate = entity.CreatedDate,
-                Id = entity.Id,
-                ModifiedBy = entity.ModifiedBy,
-                ModifiedDate = entity.ModifiedDate,
-                Name = entity.Name,
-                Dob = entity.Dob,
-                Email = entity.Email,
-                Phone = entity.Phone,
-                ProfilePicture = entity.ProfilePicture
-            };
+            var user = _mapper.Map<UserDto>(entity);
 
             return user;
         }

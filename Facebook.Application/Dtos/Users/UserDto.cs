@@ -1,4 +1,5 @@
 ﻿using Facebook.Application.Dtos.Base;
+using Facebook.Application.Dtos.Relationship;
 using Facebook.Domain.Enums;
 using System;
 using System.Collections.Generic;
