@@ -64,6 +64,22 @@ namespace Facebook.Application.Services.Users
             return userEntity;
         }
 
+        public async Task<PagingResponse<UserRelationshipDto>> GetFriends(Guid id, int pageNumber, int pageSize)
+        {
+            var friends = await _userRepository.GetFriends(id, pageNumber, pageSize);
+            var totalFriends = await _userRepository.GetTotalFriends(id);
+            var result = new PagingResponse<UserRelationshipDto>()
+            {
+                data = _mapper.Map<List<UserRelationshipDto>>(friends),
+                page = pageNumber,
+                pageSize = pageSize,
+                total = totalFriends,
+                totalPage = totalFriends / pageSize
+            };
+
+            return result;
+        }
+
         public async Task<PagingResponse<UserDto>> GetPeopleMaybeYouKnow(Guid id, int pageNumber, int pageSize)
         {
             var people = await _userRepository.GetPeopleMaybeYouKnow(id, pageNumber, pageSize);

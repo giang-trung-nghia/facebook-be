@@ -11,6 +11,10 @@ namespace Facebook.Domain.IRepositories.Users
 {
     public interface IUserRepository : IBaseRepository<UserEntity>
     {
+        Task<int> GetTotalFriends(Guid userId);
+
+        Task<List<UserEntity>> GetFriends(Guid id, int pageNumber, int pageSize);
+
         Task<List<UserEntity>> GetPeopleMaybeYouKnow(Guid id, int pageNumber, int pageSize);
 
         Task<List<UserEntity>> GetAddFriendOffers(Guid id, int pageNumber, int pageSize);

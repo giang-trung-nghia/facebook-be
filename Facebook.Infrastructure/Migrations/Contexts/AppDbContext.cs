@@ -1,5 +1,6 @@
 ﻿using Facebook.Domain.Entities;
 using Facebook.Domain.Entities.Auth;
+using Facebook.Domain.Entities.Conservation;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,9 @@ namespace Facebook.Infrastructure.Migrations.Contexts
         public DbSet<UserEntity> Users { get; set; }
         public virtual DbSet<UserRefreshTokenEntity> UserRefreshToken { get; set; }
         public DbSet<RelationshipEntity> Relationship { get; set; }
+        public DbSet<ConservationEntity> Conservation { get; set; }
+        public DbSet<ConservationMemberEntity> ConservationMember { get; set; }
+        public DbSet<MessageEntity> Message { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -33,6 +37,27 @@ namespace Facebook.Infrastructure.Migrations.Contexts
                    .WithMany(u => u.RelationsReceived)
                    .HasForeignKey(r => r.ToUserId)
                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<MessageEntity>(e =>
+            {
+                e.HasOne(m => m.Member)
+                    .WithOne()
+                    .HasForeignKey<MessageEntity>(m => m.MemberId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<MessageReadByEntity>(e =>
+            {
+                e.HasOne(m => m.Member)
+                    .WithMany()
+                    .HasForeignKey(m => m.MemberId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(m => m.Message)
+                    .WithMany(m => m.ReadBy)
+                    .HasForeignKey(m => m.MessageId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

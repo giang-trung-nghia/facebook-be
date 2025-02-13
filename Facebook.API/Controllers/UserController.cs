@@ -31,5 +31,13 @@ namespace Facebook.API.Controllers
             var result = await _userService.GetAddFriendOffers(id, pageNumber, pageSize);
             return result;
         }
+
+        [HttpGet("friends")]
+        [Authorize]
+        public async Task<PagingResponse<UserRelationshipDto>> GetFriends([FromQuery] Guid id, [FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 20)
+        {
+            var result = await _userService.GetFriends(id, pageNumber, pageSize);
+            return result;
+        }
     }
 }

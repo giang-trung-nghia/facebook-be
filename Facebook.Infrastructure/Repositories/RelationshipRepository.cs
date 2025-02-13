@@ -15,7 +15,7 @@ namespace Facebook.Infrastructure.Repositories
     public class RelationshipRepository : BaseRepository<RelationshipEntity>, IRelationshipRepository
     {
         private readonly AppDbContext _context;
-        private readonly DbSet<RelationshipEntity> _dbRelationshipSet;
+        private readonly DbSet<RelationshipEntity> _dbRelationshipSet; // test: use _dbSet in base
         public RelationshipRepository(AppDbContext context) : base(context)
         {
             _context = context;

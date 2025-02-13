@@ -12,6 +12,7 @@ namespace Facebook.Application.IServices.IUsers
 {
     public interface IUserService : IBaseService<UserDto, UserCreateDto, UserUpdateDto>
     {
+        Task<PagingResponse<UserRelationshipDto>> GetFriends(Guid id, int pageNumber, int pageSize);
         Task<PagingResponse<UserDto>> GetPeopleMaybeYouKnow(Guid id, int pageNumber, int pageSize);
         Task<PagingResponse<UserRelationshipDto>> GetAddFriendOffers(Guid id, int pageNumber, int pageSize);
 

@@ -13,7 +13,7 @@ namespace Facebook.Infrastructure.Repositories.Base
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, IEntity
     {
         private readonly AppDbContext _context;
-        private readonly DbSet<TEntity> _dbSet;
+        protected readonly DbSet<TEntity> _dbSet;
 
         public BaseRepository(AppDbContext context)
         {
