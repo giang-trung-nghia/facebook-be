@@ -17,7 +17,7 @@ namespace Facebook.Infrastructure.Migrations.Versions
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LastMessageTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },

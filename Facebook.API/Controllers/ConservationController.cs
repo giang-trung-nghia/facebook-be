@@ -1,6 +1,8 @@
 ﻿using Facebook.API.Controllers.Base;
 using Facebook.Application.Dtos.Conservation;
 using Facebook.Application.IServices.IConservation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Facebook.API.Controllers
 {
@@ -11,5 +13,16 @@ namespace Facebook.API.Controllers
         {
             _conservationService = conservationService;
         }
+
+        [HttpGet]
+        [Route("relationship/{id}")]
+        [Authorize]
+        public async Task<ConservationDto> GetConservationByRelationshipId(Guid id)
+        {
+            var result = await _conservationService.GetByRelationshipId(id);
+            return result;
+        }
+
+
     }
 }

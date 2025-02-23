@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Facebook.Infrastructure.Migrations.Versions
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250209053148_conservation_feature")]
+    [Migration("20250213171449_conservation_feature")]
     partial class conservation_feature
     {
         /// <inheritdoc />
@@ -55,7 +55,7 @@ namespace Facebook.Infrastructure.Migrations.Versions
                     b.ToTable("UserRefreshToken");
                 });
 
-            modelBuilder.Entity("Facebook.Domain.Entities.ConservationEntity", b =>
+            modelBuilder.Entity("Facebook.Domain.Entities.Conservation.ConservationEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,7 +71,6 @@ namespace Facebook.Infrastructure.Migrations.Versions
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -79,7 +78,7 @@ namespace Facebook.Infrastructure.Migrations.Versions
                     b.ToTable("Conservation");
                 });
 
-            modelBuilder.Entity("Facebook.Domain.Entities.ConservationMemberEntity", b =>
+            modelBuilder.Entity("Facebook.Domain.Entities.Conservation.ConservationMemberEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,7 +108,7 @@ namespace Facebook.Infrastructure.Migrations.Versions
                     b.ToTable("ConservationMember");
                 });
 
-            modelBuilder.Entity("Facebook.Domain.Entities.MessageEntity", b =>
+            modelBuilder.Entity("Facebook.Domain.Entities.Conservation.MessageEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -137,7 +136,7 @@ namespace Facebook.Infrastructure.Migrations.Versions
                     b.ToTable("Message");
                 });
 
-            modelBuilder.Entity("Facebook.Domain.Entities.MessageReadByEntity", b =>
+            modelBuilder.Entity("Facebook.Domain.Entities.Conservation.MessageReadByEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -246,9 +245,9 @@ namespace Facebook.Infrastructure.Migrations.Versions
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Facebook.Domain.Entities.ConservationMemberEntity", b =>
+            modelBuilder.Entity("Facebook.Domain.Entities.Conservation.ConservationMemberEntity", b =>
                 {
-                    b.HasOne("Facebook.Domain.Entities.ConservationEntity", "Conservation")
+                    b.HasOne("Facebook.Domain.Entities.Conservation.ConservationEntity", "Conservation")
                         .WithMany("Members")
                         .HasForeignKey("ConservationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -265,25 +264,25 @@ namespace Facebook.Infrastructure.Migrations.Versions
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Facebook.Domain.Entities.MessageEntity", b =>
+            modelBuilder.Entity("Facebook.Domain.Entities.Conservation.MessageEntity", b =>
                 {
-                    b.HasOne("Facebook.Domain.Entities.ConservationMemberEntity", "Member")
+                    b.HasOne("Facebook.Domain.Entities.Conservation.ConservationMemberEntity", "Member")
                         .WithOne()
-                        .HasForeignKey("Facebook.Domain.Entities.MessageEntity", "MemberId")
+                        .HasForeignKey("Facebook.Domain.Entities.Conservation.MessageEntity", "MemberId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("Facebook.Domain.Entities.MessageReadByEntity", b =>
+            modelBuilder.Entity("Facebook.Domain.Entities.Conservation.MessageReadByEntity", b =>
                 {
-                    b.HasOne("Facebook.Domain.Entities.ConservationMemberEntity", "Member")
+                    b.HasOne("Facebook.Domain.Entities.Conservation.ConservationMemberEntity", "Member")
                         .WithMany()
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Facebook.Domain.Entities.MessageEntity", "Message")
+                    b.HasOne("Facebook.Domain.Entities.Conservation.MessageEntity", "Message")
                         .WithMany("ReadBy")
                         .HasForeignKey("MessageId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -313,12 +312,12 @@ namespace Facebook.Infrastructure.Migrations.Versions
                     b.Navigation("ToUser");
                 });
 
-            modelBuilder.Entity("Facebook.Domain.Entities.ConservationEntity", b =>
+            modelBuilder.Entity("Facebook.Domain.Entities.Conservation.ConservationEntity", b =>
                 {
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("Facebook.Domain.Entities.MessageEntity", b =>
+            modelBuilder.Entity("Facebook.Domain.Entities.Conservation.MessageEntity", b =>
                 {
                     b.Navigation("ReadBy");
                 });

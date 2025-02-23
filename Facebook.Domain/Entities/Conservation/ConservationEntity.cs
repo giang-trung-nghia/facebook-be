@@ -12,7 +12,7 @@ namespace Facebook.Domain.Entities.Conservation
         public ICollection<ConservationMemberEntity> Members { get; set; }
 
         public DateTime LastMessageTime { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
     }
 }

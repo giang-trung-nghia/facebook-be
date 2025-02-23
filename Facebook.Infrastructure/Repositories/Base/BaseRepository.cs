@@ -105,6 +105,7 @@ namespace Facebook.Infrastructure.Repositories.Base
 
             var existingEntity = await GetAsync(id); // Throws NotFoundException if not found
             _context.Entry(existingEntity).CurrentValues.SetValues(entity);
+            //_context.Entry(existingEntity).Property(e => e.Id).IsModified = false;
             await _context.SaveChangesAsync();
             return existingEntity;
         }

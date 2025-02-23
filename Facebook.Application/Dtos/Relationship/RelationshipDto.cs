@@ -16,5 +16,6 @@ namespace Facebook.Application.Dtos.Relationship
         public Guid ToUserId { get; set; }
         public RelationshipType RelationshipType { get; set; }
         public RelationshipStatus Status { get; set; }
+        public Guid ConservationId { get; set; }
     }
 }

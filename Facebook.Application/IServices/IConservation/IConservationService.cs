@@ -10,5 +10,6 @@ namespace Facebook.Application.IServices.IConservation
 {
     public interface IConservationService : IBaseService<ConservationDto, ConservationCreateDto, ConservationUpdateDto>
     {
+        Task<ConservationDto> GetByRelationshipId(Guid id);
     }
 }
