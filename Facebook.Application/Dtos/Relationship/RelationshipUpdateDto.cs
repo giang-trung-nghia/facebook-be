@@ -10,8 +10,8 @@ namespace Facebook.Application.Dtos.Relationship
 {
     public class RelationshipUpdateDto
     {
-        public RelationshipType RelationshipType { get; set; }
-        public RelationshipStatus Status { get; set; }
+        public RelationshipType? RelationshipType { get; set; }
+        public RelationshipStatus? Status { get; set; }
         public Guid ConservationId { get; set; }
     }
 }

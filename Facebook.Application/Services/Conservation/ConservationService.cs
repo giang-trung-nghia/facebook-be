@@ -41,10 +41,7 @@ namespace Facebook.Application.Services.Conservation
                     MemberIds = memberIds,
                 });
 
-                var updatedRelationshipDto = await _relationshipService.UpdateAsync(id, new Dtos.Relationship.RelationshipUpdateDto
-                {
-                    ConservationId = conservationDto.Id
-                });
+                var updatedRelationshipDto = await _relationshipService.UpdateConservationId(id, conservationDto.Id);
 
                 return conservationDto;
 

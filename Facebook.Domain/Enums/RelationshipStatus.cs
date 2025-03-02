@@ -8,9 +8,9 @@ namespace Facebook.Domain.Enums
 {
     public enum RelationshipStatus
     {
-        Pending = 0,
-        Accepted = 1,
-        Denied = 2,
-        Blocked = 3,
+        Pending = 1,
+        Accepted = 2,
+        Denied = 3,
+        Blocked = 4,
     }
 }

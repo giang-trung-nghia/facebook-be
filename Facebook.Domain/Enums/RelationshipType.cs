@@ -8,7 +8,7 @@ namespace Facebook.Domain.Enums
 {
     public enum RelationshipType
     {
-        Follow,
-        Friend
+        Follow = 1,
+        Friend = 2
     }
 }

@@ -8,8 +8,8 @@ namespace Facebook.Domain.Enums
 {
     public enum SortOption
     {
-        ASC,
-        DESC,
-        NO
+        ASC = 1,
+        DESC = 2,
+        NO = 3
     }
 }

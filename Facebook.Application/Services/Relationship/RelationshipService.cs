@@ -88,5 +88,32 @@ namespace Facebook.Application.Services.Relationship
             var result = _mapper.Map<RelationshipUpdateDto, RelationshipEntity>(updateDto, entity);
             return result;
         }
+
+        public async Task<RelationshipDto> UpdateConservationId(Guid id, Guid conservationId)
+        {
+            var entity = await _relationshipRepository.GetAsync(id);
+
+            if (entity is BaseEntity baseEntity) {
+                baseEntity.ModifiedDate = DateTime.Now;
+            }
+
+            var newEntity = new RelationshipEntity
+            {
+                Id = id,
+                CreatedDate = entity.CreatedDate,
+                ModifiedDate = entity.ModifiedDate,
+                RelationshipType = entity.RelationshipType,
+                FromUserId = entity.FromUserId,
+                Status = entity.Status,
+                ToUserId = entity.ToUserId,
+                ConservationId = conservationId,
+            };
+
+            await _relationshipRepository.UpdateAsync(id, newEntity);
+
+            var result = MapEntityToEntityDto(newEntity);
+
+            return result;
+        }
     }
 }

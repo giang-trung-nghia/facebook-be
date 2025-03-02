@@ -12,5 +12,7 @@ namespace Facebook.Application.IServices.IRelationship
     public interface IRelationshipService : IBaseService<RelationshipDto, RelationshipCreateDto, RelationshipUpdateDto>
     {
         Task<RelationshipDto> AcceptFriend(Guid id);
+        Task<RelationshipDto> UpdateConservationId(Guid id, Guid conservationId);
+
     }
 }

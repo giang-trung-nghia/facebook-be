@@ -16,7 +16,8 @@ namespace Facebook.Application.Mapping
         { 
             CreateMap<RelationshipEntity, RelationshipDto>();
             CreateMap<RelationshipCreateDto, RelationshipEntity>();
-            CreateMap<RelationshipUpdateDto, RelationshipEntity>().ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<RelationshipUpdateDto, RelationshipEntity>()
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }
